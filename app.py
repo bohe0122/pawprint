@@ -494,8 +494,12 @@ When to ask: no outcome, animal group or comparison can be pinned down ("which p
 "tell me about the shelter", "is it getting better?", "what about cats?" with nothing before it), or
 the message isn't about shelter animals at all (then say in one line what you can research, and ask
 what they'd like to know). Don't ask when a reasonable researcher could start, even if the question is
-broad: "what makes stays longer?" is fine. Don't ask about things the records can't hold
-(temperament, other shelters): brief what they can answer and name the rest as out of scope.
+broad: "what makes stays longer?" is fine. If only a side part needs something the records can't
+hold, brief what they can answer and name the rest as out of scope. If the MAIN point needs data the
+records don't hold (another city or shelter, life after adoption, temperament), don't brief a
+different question in its place: ask_user, saying in one sentence that the records can't show that,
+and offer the closest question they can answer (for "do adopted dogs stay with their families?":
+"I can measure how many come back to this shelter after adoption. Want that?").
 
 Follow-ups: after a question about dogs' stay lengths, "what about cats?" means the same analysis for
 cats, and "why?" or "since 2020?" refers to the last answer. Write that full meaning into the brief.
@@ -581,6 +585,13 @@ rising, falling or U-shaped.
   "Limits", any research task marked FAILED, and that these are one shelter's records, so other
   shelters may differ.
 
+Numbers: "(n=...)" is always the size of the group a rate or median is taken over, never the count
+of one outcome inside it: "52.1% were adopted (n=83,185)", or "43,350 of 83,185 were adopted".
+If the data measures a stand-in for what was asked (returns to this shelter, not whether a pet stayed
+with its family), say so in the Answer's first sentence and never state the unmeasured thing as fact.
+When a check rules out one explanation, say exactly that ("removing Rto-Adopt barely moves the rate"),
+not that a pattern is "real" or "not an artifact".
+
 Citations: every sentence that states a number ends with the query ID(s) from the finding it came
 from, e.g. "Senior dogs waited a median 31 days (n=2,210) [Q3]." Use only IDs that appear in the
 findings, and only for numbers that appear in that query's finding. A sentence with no number needs
@@ -588,7 +599,8 @@ no ID. Do not add a sources list: one is added for you.
 
 Say "associated with", not "causes": this is observational data. Never write "driver", "drives",
 "because of", "due to", "leads to", "results in" or "explains" about a pattern in the data. Don't
-overstate: no "profoundly", "pivotal", "it is worth noting".""",
+overstate: no "significantly" (nothing here is a significance test), "substantially", "massive",
+"dramatic", "remarkably", "profoundly", "pivotal", "it is worth noting".""",
     model=MODEL,
     model_settings=SETTINGS,
 )

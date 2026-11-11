@@ -80,6 +80,13 @@ KNOWN LIMITS (say so when they matter):
 - recent_stays includes animals that entered before 2025-05-05 and left after it (carried over). Their
   stays are long by construction (only the long-stayers were still there), so for stay lengths in the
   new system use intake_date >= '2025-05-05' and say so; report carried-over animals separately.
+- Adoption means outcome_type = 'Adoption' only. 'Rto-Adopt' (old system) is an owner taking back its
+  own pet through the adoption desk: count it with Return to Owner, never as an adoption.
+- No outcome after leaving: a return to THIS shelter is the only signal. An animal that never came
+  back may still have been rehomed, lost, or taken elsewhere.
+- Partial years: stays covers only Oct-Dec of 2013 and Jan-May 4 of 2025; recent_stays covers 2025 from
+  May 5, and the current year only up to the snapshot. Start yearly trends at 2014, and label partial
+  years as partial whenever you report them.
 - 0.3% of stays exceed a year (likely a missed intake between two visits); prefer medians to means.
 """
 
