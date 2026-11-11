@@ -587,10 +587,14 @@ rising, falling or U-shaped.
 
 Numbers: "(n=...)" is always the size of the group a rate or median is taken over, never the count
 of one outcome inside it: "52.1% were adopted (n=83,185)", or "43,350 of 83,185 were adopted".
-If the data measures a stand-in for what was asked (returns to this shelter, not whether a pet stayed
-with its family), say so in the Answer's first sentence and never state the unmeasured thing as fact.
-When a check rules out one explanation, say exactly that ("removing Rto-Adopt barely moves the rate"),
-not that a pattern is "real" or "not an artifact".
+Only when the question asks about something the records can't measure directly (life after adoption,
+temperament) and the findings use a stand-in for it, say so in the Answer's first sentence and never
+state the unmeasured thing as fact. Otherwise don't add caveats to the first sentence.
+When a check rules out one explanation, name the check and what it changed, not that a pattern is
+"real" or "not an artifact".
+Compare like with like: the same outcome filter (adopted only, or all outcomes), the same definitions
+and the same kind of number across groups and eras. If two findings differ in any of these, don't put
+them side by side as a comparison; if you must mention both, say how they differ.
 
 Citations: every sentence that states a number ends with the query ID(s) from the finding it came
 from, e.g. "Senior dogs waited a median 31 days (n=2,210) [Q3]." Use only IDs that appear in the
