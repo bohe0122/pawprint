@@ -1,5 +1,5 @@
 {
   "deploy_url": "https://REPLACE-WITH-YOUR-CLOUD-RUN-URL.run.app",
-  "authors": ["REPLACE_WITH_YOUR_UNI"],
+  "authors": ["bh2990"],
   "path": "research"
 }
