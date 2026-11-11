@@ -184,9 +184,7 @@ Public Assist 25.5, Abandoned 17.9, Owner Surrender 9.3, Stray 9.0.
 *Table:* `stays` (`animal_type='Dog' AND outcome_type='Adoption'`).
 
 **2. How do senior cats fare compared with kittens and adult cats?**
-Expected: seniors have the worst outcomes, but kittens wait longest. Euthanasia: seniors 12.7% (n=3,799)
-vs adults 5.1% (n=19,512) and kittens 2.3% (n=45,254). Adoption: kittens 57.7%, seniors 41.3%, adults
-39.7%. Median days to adoption: kittens 28.2, seniors 27.1, adults 17.8. Kittens wait longer than adults,
+Expected: Senior cats have the highest euthanasia rate, while kittens have the highest adoption rate and the longest median time to adoption. Euthanasia: seniors 12.7% (n=3,799) vs adults 5.1% (n=19,512) and kittens 2.3% (n=45,254). Adoption: kittens 57.7%, seniors 41.3%, adults 39.7%. Median days to adoption: kittens 28.2, seniors 27.1, adults 17.8. Kittens wait longer than adults,
 likely because they stay in foster until they are old enough to be adopted; the agent should flag that
 reason as a likely explanation the data only hints at (via the `Foster` outcome subtype), not a fact.
 *Table:* `stays` (`animal_type='Cat'`, grouped by `age_group`).
@@ -207,8 +205,7 @@ seniors 27.1, from `stays`) without asking what you mean.
 
 ### No tools vs. the agent
 
-The same model (Gemini 3.5 Flash) with no tools and no system prompt, next to Pawprint's answer.
-Regenerate with `uv run compare.py`.
+The table below summarizes the responses from the same model (Gemini 3.5 Flash) with and without tools or a system prompt for the no-tools baseline. Full, unabridged responses, SQL queries, and tool-call traces are available in docs/sample_answers.md. Regenerate the comparison with uv run compare.py.
 
 <!-- COMPARISON:START -->
 | Query | Same model, no tools, no system prompt | Pawprint agent |
@@ -254,7 +251,7 @@ Follows the course guide *Deploying to Cloud Run from GitHub*: Cloud Run → *Co
 - **Build type:** buildpack, entrypoint `uvicorn app:app --host 0.0.0.0 --port $PORT`.
   The database `data/shelter.duckdb` (about 9 MB) is committed, so it ships with every build.
 - **Authentication:** *Require authentication* → Identity-Aware Proxy, principal `columbia.edu`.
-- **Request timeout:** 300 seconds (a report takes 1-3 minutes; the agent's own caps keep it under 5).
+- **Request timeout:** 300 seconds. Research time varies by question complexity. The agent uses limits on research rounds, researchers, and tool calls to help keep responses within the grader's 5-minute window.
 - **Memory:** 1 GiB.
 - **Maximum instances: 1.** Conversation history lives in a SQLite file on the instance, and Cloud Run's
   filesystem is in memory and per instance, so every message in a session must reach the same instance.
