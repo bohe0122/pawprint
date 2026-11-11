@@ -3,7 +3,7 @@
 
 https://pawprint-255494031083.europe-west1.run.app
 
-Access: The application is protected by Google Cloud Identity-Aware Proxy (IAP). Users must sign in with a Columbia University Google account (@columbia.edu) to access the website. Personal Google accounts and other external accounts are not authorized.
+*Access: The application is protected by Google Cloud Identity-Aware Proxy (IAP). Users must sign in with a Columbia University Google account (@columbia.edu) to access the website. Personal Google accounts and other external accounts are not authorized.*
 
 Pawprint is a deep research agent over twelve years of animal shelter records. You ask a question about
 shelter stays and outcomes; a Lead agent plans the research, Researcher agents query the data in parallel,
