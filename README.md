@@ -1,7 +1,7 @@
 
 # Pawprint: why do some shelter animals wait so long for a home?
 
-https://pawprint-255494031083.europe-west1.run.app
+*https://pawprint-255494031083.europe-west1.run.app*
 
 *Access: The application is protected by Google Cloud Identity-Aware Proxy (IAP). Users must sign in with a Columbia University Google account (@columbia.edu) to access the website. Personal Google accounts and other external accounts are not authorized.*
 
