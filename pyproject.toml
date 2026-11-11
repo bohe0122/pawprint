@@ -1,0 +1,20 @@
+[project]
+name = "pawprint"
+version = "0.1.0"
+description = "Deep research over Austin Animal Center's intake and outcome records: a Lead fans out Researchers that query the data in parallel, then a Writer turns their findings into a cited report"
+requires-python = ">=3.11"
+dependencies = [
+    "fastapi>=0.109.0",
+    "uvicorn>=0.27.0",
+    "openai-agents[litellm]>=0.22",
+    "google-cloud-aiplatform>=1.40.0",
+    "python-dotenv>=1.0",
+    "duckdb>=1.1",
+    "pandas>=2.2",
+]
+
+[dependency-groups]
+dev = [
+    "httpx>=0.28.1",
+    "pytest>=9.2.0",
+]

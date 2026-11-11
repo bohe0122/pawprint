@@ -1,0 +1,21 @@
+# Virtual environment. uv recreates it from pyproject.toml + uv.lock.
+.venv/
+
+# Python bytecode
+__pycache__/
+*.py[cod]
+
+# Local secrets. Commit .env.example instead, never .env.
+.env
+
+# macOS
+.DS_Store
+
+# Raw CSV downloads (~57 MB). build_db.py fetches them; the built data/shelter.duckdb is committed.
+data/raw/
+
+# Local test artifacts
+.pytest_cache/
+
+# SDK session store (conversation history), created at runtime
+conversations.db

@@ -1,0 +1,1052 @@
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="UTF-8" />
+        <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+        <title>Pawprint: why shelter animals wait</title>
+        <link rel="preconnect" href="https://fonts.googleapis.com" />
+        <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+        <link href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Gaegu:wght@400;700&family=Nunito:ital,wght@0,400;0,700;0,800;1,400&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+        <style>
+            :root {
+                --page: #d4ebfa;
+                --sky: #93ccef;
+                --grass: #7cc45f;
+                --green: #2f8a46; /* title green */
+                --tomato: #e2553f;
+                --cream: #fdf6e3;
+                --butter: #f8d96b;
+                --butter-soft: #fcefb4;
+                --sage: #b9d99f;
+                --blue-tile: #bfe0f6;
+                --pink: #f2a7b5;
+                --ink: #262421;
+                --muted: #6d665b;
+                --line: 3px solid var(--ink);
+                --display: "Fredoka", ui-rounded, "Arial Rounded MT Bold", system-ui, sans-serif;
+                --hand: "Gaegu", "Comic Neue", "Chalkboard SE", ui-rounded, system-ui, sans-serif;
+                --body: "Nunito", ui-rounded, system-ui, sans-serif;
+                --mono: "JetBrains Mono", ui-monospace, monospace;
+            }
+            * { box-sizing: border-box; margin: 0; padding: 0; }
+            body {
+                font-family: var(--body);
+                font-size: 1.0625rem;
+                line-height: 1.6;
+                color: var(--ink);
+                background: var(--page);
+            }
+            body:not(.show-context) { margin-right: 0 !important; }
+            body:not(.show-context) #context-panel { display: none; }
+            a { color: var(--ink); font-weight: 700; text-decoration-thickness: 2px; text-underline-offset: 2px; }
+            :focus-visible { outline: 3px dashed var(--tomato); outline-offset: 3px; }
+            button { font: inherit; cursor: pointer; color: inherit; }
+            .page { max-width: 1200px; margin: 0 auto; padding: 1.75rem 1.25rem 4rem; }
+            .card { border: var(--line); border-radius: 26px; background: var(--cream); }
+            .title {
+                font-family: var(--display);
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.03em;
+                line-height: 0.95;
+            }
+            .title .g { color: var(--green); }
+            .title .r { color: var(--tomato); }
+            .hand { font-family: var(--hand); font-weight: 700; }
+            svg.ico { width: 1.3em; height: 1.3em; flex: none; }
+
+            /* --- Poster: the picnic --- */
+            .poster {
+                position: relative;
+                overflow: hidden;
+                background: var(--sky);
+                border: var(--line);
+                border-radius: 34px;
+            }
+            .poster-top {
+                position: relative;
+                z-index: 1;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) minmax(0, 1.05fr);
+                gap: 1.75rem;
+                align-items: start;
+                padding: 1.3rem 1.8rem 0;
+            }
+            .wordmark { font-size: clamp(2.5rem, 5.5vw, 3.9rem); letter-spacing: 0.05em; text-shadow: 2px 2px 0 #fffdf6; }
+            .club { font-size: 1.2rem; margin: 0.15rem 0 0.8rem 0.15rem; letter-spacing: 0.03em; }
+            .note {
+                background: var(--cream);
+                border: var(--line);
+                border-radius: 22px;
+                padding: 0.95rem 1.15rem 1rem;
+                box-shadow: 4px 5px 0 var(--ink);
+            }
+            .note h1 {
+                font-family: var(--display);
+                font-weight: 600;
+                font-size: clamp(1.25rem, 2vw, 1.55rem);
+                line-height: 1.18;
+                margin-bottom: 0.45rem;
+            }
+            .note p { font-size: 0.93rem; line-height: 1.55; color: var(--muted); }
+            .note strong { color: var(--ink); }
+            .clouds { position: absolute; top: 0.4rem; right: 1.2rem; width: 15rem; z-index: 0; }
+            .poster .ask { box-shadow: 4px 5px 0 var(--ink); margin-top: 3.4rem; }
+            .scene { display: block; width: 100%; height: auto; margin-top: -1.2rem; position: relative; z-index: 0; }
+
+            /* --- Tiles: how it works, and the records --- */
+            .tiles {
+                display: grid;
+                grid-template-columns: repeat(2, minmax(0, 1fr));
+                gap: 0.9rem;
+                margin: 0;
+                list-style: none;
+            }
+            .tile {
+                border: var(--line);
+                border-radius: 22px;
+                padding: 1rem 1.1rem 1.1rem;
+                position: relative;
+            }
+            .tile:nth-child(1) { background: var(--butter-soft); }
+            .tile:nth-child(2) { background: var(--sage); }
+            .tile:nth-child(3) { background: var(--blue-tile); }
+            .tile:nth-child(4) { background: #fbd6dc; }
+            .tile:nth-child(5) { background: var(--cream); }
+            .tile-wide { grid-column: 1 / -1; }
+            .tile-wide .facts { grid-template-columns: repeat(2, minmax(0, 1fr)); column-gap: 1.2rem; }
+            .tile-wide .facts li:nth-child(2) { border-top: none; padding-top: 0; }
+            .tile-head { display: flex; align-items: center; gap: 0.6rem; margin-bottom: 0.45rem; }
+            .tile-head svg { width: 3rem; height: 3rem; flex: none; }
+            .tile h2 { font-family: var(--display); font-weight: 600; font-size: 1.1rem; line-height: 1.1; text-transform: uppercase; letter-spacing: 0.02em; }
+            .tile p { font-size: 0.93rem; }
+            .tile .step { font-family: var(--hand); font-size: 1.05rem; color: var(--muted); display: block; line-height: 1; }
+            .facts { list-style: none; display: grid; gap: 0.35rem; font-size: 0.93rem; }
+            .facts li { display: flex; gap: 0.5rem; align-items: center; border-top: 2px solid var(--ink); padding-top: 0.35rem; }
+            .facts li:first-child { border-top: none; padding-top: 0; }
+            .facts b { font-variant-numeric: tabular-nums; }
+
+            /* --- Workspace --- */
+            .workspace {
+                margin-top: 1.5rem;
+                display: grid;
+                grid-template-columns: minmax(0, 1fr) 23rem;
+                gap: 1.5rem;
+                align-items: start;
+            }
+            .ask { padding: 1.05rem 1.2rem 1rem; }
+            .ask-title { font-size: 1.45rem; margin-bottom: 0.1rem; }
+            .ask label { display: block; font-size: 1.15rem; margin-bottom: 0.6rem; color: var(--muted); }
+            .ask-row { display: flex; gap: 0.7rem; }
+            #question {
+                flex: 1;
+                min-width: 0;
+                font: inherit;
+                padding: 0.75rem 1rem;
+                border: var(--line);
+                border-radius: 16px;
+                background: #fff;
+                color: var(--ink);
+            }
+            #question:focus { outline: none; box-shadow: 0 0 0 4px var(--butter); }
+            .btn {
+                font-family: var(--display);
+                font-weight: 600;
+                font-size: 1.1rem;
+                text-transform: uppercase;
+                letter-spacing: 0.04em;
+                padding: 0.6rem 1.3rem;
+                border: var(--line);
+                border-radius: 14px;
+                background: var(--tomato);
+                color: #fff;
+                box-shadow: 0 4px 0 var(--ink);
+                transition: transform 0.08s, box-shadow 0.08s;
+            }
+            .btn:active { transform: translateY(3px); box-shadow: 0 1px 0 var(--ink); }
+            .btn:disabled { opacity: 0.55; cursor: progress; }
+            .examples-label { font-size: 1.05rem; margin: 0.7rem 0 0.35rem; }
+            .examples { display: flex; flex-wrap: wrap; gap: 0.5rem; }
+            .examples button {
+                font-size: 0.82rem;
+                font-weight: 700;
+                padding: 0.35rem 0.8rem;
+                border-radius: 999px;
+                border: 2px solid var(--ink);
+                text-align: left;
+                background: #fff;
+            }
+            .examples button:nth-child(4n + 1) { background: var(--butter-soft); }
+            .examples button:nth-child(4n + 2) { background: var(--sage); }
+            .examples button:nth-child(4n + 3) { background: var(--blue-tile); }
+            .examples button:nth-child(4n + 4) { background: #fbd6dc; }
+            .examples button:hover { transform: translateY(-1px); }
+            .examples button.vague { background: #fff; border-style: dashed; color: var(--muted); }
+            .hint { font-size: 1rem; color: var(--muted); margin-top: 0.55rem; }
+            .new-chat { margin-top: 0.5rem; font-size: 1.05rem; background: #fff; border: 2px dashed var(--ink); border-radius: 12px; padding: 0.15rem 0.7rem; }
+            .new-chat[hidden] { display: none; }
+
+            .thread { display: flex; flex-direction: column; gap: 1rem; margin-top: 1.25rem; }
+            .bubble {
+                max-width: 75ch;
+                padding: 0.75rem 1.05rem;
+                border: var(--line);
+                border-radius: 20px;
+            }
+            .bubble.you {
+                align-self: flex-end;
+                background: var(--blue-tile);
+                border-bottom-right-radius: 6px;
+                font-weight: 700;
+            }
+            .bubble.lead {
+                display: flex;
+                gap: 0.8rem;
+                align-items: center;
+                background: var(--butter-soft);
+                border-bottom-left-radius: 6px;
+            }
+            .bubble.lead .avatar { width: 3.2rem; height: 3.2rem; }
+            .bubble.lead b { display: block; font-family: var(--display); font-weight: 600; text-transform: uppercase; color: var(--green); letter-spacing: 0.02em; }
+            .bubble.error { background: #fbd6dc; }
+            .bubble.error b { display: block; font-family: var(--display); font-weight: 600; text-transform: uppercase; color: var(--tomato); }
+            .working { display: flex; align-items: center; gap: 0.6rem; font-family: var(--hand); font-weight: 700; font-size: 1.15rem; color: var(--muted); padding-left: 0.3rem; }
+            .working .trail { display: inline-flex; gap: 0.3rem; color: var(--tomato); }
+            .working .trail svg { width: 1.1rem; height: 1.1rem; }
+
+            /* The report */
+            .report { padding: 0 0 1.75rem; overflow: hidden; }
+            .report-banner {
+                display: flex;
+                align-items: flex-end;
+                gap: 0.8rem;
+                background: var(--grass);
+                border-bottom: var(--line);
+                padding: 0.9rem 1.6rem 0;
+            }
+            .report-banner .avatar { width: 4rem; height: 4rem; margin-bottom: -0.35rem; }
+            .report-banner .title { font-size: 1.6rem; padding-bottom: 0.6rem; color: #fffdf6; text-shadow: 2px 2px 0 var(--ink); }
+            .report-inner { padding: 1.4rem 1.8rem 0; }
+            .report-body { max-width: 70ch; }
+            .report-body h2, .report-body h3 {
+                font-family: var(--display);
+                font-weight: 600;
+                text-transform: uppercase;
+                letter-spacing: 0.02em;
+                font-size: 1.3rem;
+                line-height: 1.2;
+                margin: 1.6rem 0 0.5rem;
+                padding-bottom: 0.25rem;
+                border-bottom: 2px solid var(--ink);
+            }
+            .report-body > :first-child { margin-top: 0; }
+            .report-body h3:nth-of-type(odd), .report-body h2:nth-of-type(odd) { color: var(--green); }
+            .report-body h3:nth-of-type(even), .report-body h2:nth-of-type(even) { color: var(--tomato); }
+            .report-body h4 { font-family: var(--display); font-weight: 600; margin: 1.2rem 0 0.4rem; }
+            .report-body p, .report-body ul, .report-body ol { margin-bottom: 0.8rem; }
+            .report-body ul, .report-body ol { padding-left: 1.3rem; }
+            .report-body li::marker { color: var(--tomato); }
+            .report-body strong { font-weight: 800; }
+            .report-body code { font-family: var(--mono); font-size: 0.85em; background: var(--butter-soft); padding: 0 0.25em; border-radius: 4px; }
+            .report-body table { border-collapse: collapse; margin: 0.5rem 0 1rem; font-size: 0.92rem; }
+            .report-body th, .report-body td { border-bottom: 2px solid var(--ink); padding: 0.3rem 0.8rem 0.3rem 0; text-align: left; }
+
+            /* A citation: a little tag that opens the query behind the number */
+            .cite {
+                display: inline-flex;
+                align-items: center;
+                gap: 0.15em;
+                font-family: var(--display);
+                font-weight: 600;
+                font-size: 0.72em;
+                line-height: 1;
+                padding: 0.22em 0.5em 0.2em 0.4em;
+                margin: 0 0.12em;
+                border: 2px solid var(--ink);
+                border-radius: 8px;
+                background: var(--butter);
+                vertical-align: 0.12em;
+            }
+            .cite svg { width: 0.95em; height: 0.95em; color: var(--tomato); }
+            .cite:hover { background: var(--tomato); color: #fff; }
+            .cite:hover svg { color: #fff; }
+
+            .check {
+                display: flex;
+                gap: 0.6rem;
+                align-items: center;
+                margin-top: 1.4rem;
+                padding: 0.65rem 0.95rem;
+                border: 2px solid var(--ink);
+                border-radius: 16px;
+                font-weight: 700;
+                font-size: 0.93rem;
+                background: var(--sage);
+            }
+            .check.bad { background: #fbd6dc; }
+            .check .stamp {
+                flex: none;
+                font-family: var(--display);
+                font-weight: 600;
+                text-transform: uppercase;
+                font-size: 0.72rem;
+                letter-spacing: 0.03em;
+                line-height: 1.05;
+                text-align: center;
+                width: 4.2rem;
+                height: 4.2rem;
+                display: grid;
+                place-items: center;
+                border: 2.5px solid var(--green);
+                color: var(--green);
+                border-radius: 50%;
+                transform: rotate(-12deg);
+                background: #fffdf6;
+            }
+            .check.bad .stamp { border-color: var(--tomato); color: var(--tomato); }
+
+            .sources { margin-top: 1.5rem; }
+            .sources > h2 { font-size: 1.3rem; margin-bottom: 0.25rem; }
+            .sources > p { font-size: 0.92rem; color: var(--muted); margin-bottom: 0.75rem; }
+            details.source { border: 2px solid var(--ink); border-radius: 16px; margin-bottom: 0.5rem; background: #fff; }
+            details.source[open] { background: #fffdf6; }
+            details.source.flash { box-shadow: 0 0 0 4px var(--butter); }
+            details.source summary { cursor: pointer; padding: 0.55rem 0.85rem; display: flex; gap: 0.6rem; align-items: center; font-size: 0.93rem; font-weight: 700; }
+            details.source summary .cite { flex: none; font-size: 0.8rem; }
+            details.source summary small { margin-left: auto; white-space: nowrap; font-family: var(--hand); font-size: 1.05rem; color: var(--muted); }
+            .source-body { padding: 0 0.85rem 0.85rem; font-size: 0.86rem; }
+            .source-body pre {
+                font-family: var(--mono);
+                font-size: 0.8rem;
+                white-space: pre-wrap;
+                word-break: break-word;
+                background: #2f3b46;
+                color: #f3f6f8;
+                padding: 0.8rem 0.9rem;
+                border-radius: 12px;
+                border: 2px solid var(--ink);
+                margin-bottom: 0.6rem;
+            }
+            .source-body .result { overflow-x: auto; margin-bottom: 0.5rem; }
+            .source-body table { border-collapse: collapse; font-variant-numeric: tabular-nums; }
+            .source-body th, .source-body td { padding: 0.2rem 0.9rem 0.2rem 0; border-bottom: 1.5px solid #cfc6b3; text-align: left; white-space: nowrap; }
+            .source-body .data-link { color: var(--muted); }
+
+            /* --- The research board --- */
+            .board { position: sticky; top: 1rem; padding: 1.1rem 1.1rem 1.2rem; max-height: calc(100vh - 2rem); overflow-y: auto; }
+            .board-head { display: flex; justify-content: space-between; align-items: center; gap: 0.5rem; margin-bottom: 0.6rem; }
+            .board-head .title { font-size: 1.45rem; }
+            #status { font-family: var(--hand); font-weight: 700; font-size: 1.1rem; color: var(--muted); font-variant-numeric: tabular-nums; }
+            .board-empty { text-align: center; font-size: 0.93rem; color: var(--muted); padding: 0.4rem 0.3rem 0; }
+            .board-empty .nap { display: flex; justify-content: center; gap: 0.2rem; margin-bottom: 0.4rem; }
+            .board-empty .nap svg { width: 3rem; height: 3rem; }
+            .round-label { font-family: var(--hand); font-weight: 700; font-size: 1.15rem; margin: 0.9rem 0 0.45rem; display: flex; align-items: center; gap: 0.4rem; }
+            .round-label::after { content: ""; flex: 1; border-top: 2px dashed var(--ink); opacity: 0.35; }
+            .lanes { display: grid; gap: 0.55rem; }
+            .lane {
+                display: grid;
+                grid-template-columns: auto minmax(0, 1fr);
+                gap: 0 0.65rem;
+                padding: 0.55rem 0.7rem;
+                border: 2px solid var(--ink);
+                border-radius: 16px;
+                background: #fff;
+                font-size: 0.86rem;
+            }
+            .lane .avatar { grid-row: span 3; width: 2.8rem; height: 2.8rem; }
+            .lane.running { background: var(--butter-soft); }
+            .lane.done { background: #e5f2d8; }
+            .lane-name { font-family: var(--display); font-weight: 600; text-transform: uppercase; font-size: 0.92rem; letter-spacing: 0.02em; }
+            .lane-task { color: var(--muted); margin-bottom: 0.15rem; }
+            .lane-task:empty { display: none; }
+            .lane ol { list-style: none; }
+            .lane li { padding: 0.08rem 0; }
+            .lane li .cite { font-size: 0.68rem; }
+            #toggle-context {
+                margin-top: 1rem;
+                width: 100%;
+                font-family: var(--hand);
+                font-weight: 700;
+                font-size: 1.05rem;
+                background: #fff;
+                border: 2px dashed var(--ink);
+                border-radius: 12px;
+                padding: 0.3rem 0.6rem;
+            }
+
+            .avatar { display: block; flex: none; width: 2.4rem; height: 2.4rem; }
+
+            footer { margin-top: 2.5rem; display: flex; gap: 0.8rem; align-items: flex-start; font-size: 0.88rem; color: var(--muted); max-width: 80ch; }
+            footer svg { width: 1.4rem; height: 1.4rem; color: var(--tomato); flex: none; margin-top: 0.1rem; }
+
+            @media (max-width: 1000px) {
+                .clouds { width: 11rem; }
+                .workspace { grid-template-columns: 1fr; }
+                .board { position: static; max-height: none; }
+            }
+            @media (max-width: 820px) {
+                .poster-top { grid-template-columns: 1fr; }
+                .poster .ask { margin-top: 0; }
+            }
+            @media (max-width: 760px) {
+                .poster-top { grid-template-columns: 1fr; padding: 1.2rem 1rem 0; }
+                .clouds { display: none; }
+                .scene { margin-top: 0.5rem; }
+            }
+            @media (max-width: 560px) {
+                .page { padding: 1rem 0.75rem 3rem; }
+                .tiles { grid-template-columns: 1fr; }
+                .tile-wide .facts { grid-template-columns: 1fr; }
+                .tile-wide .facts li:nth-child(2) { border-top: 2px solid var(--ink); padding-top: 0.35rem; }
+                .ask-row { flex-direction: column; }
+                .report-inner { padding: 1.2rem 1.1rem 0; }
+            }
+            @media (prefers-reduced-motion: no-preference) {
+                .lane.running .avatar { animation: hop 0.9s ease-in-out infinite; }
+                @keyframes hop { 0%, 100% { transform: translateY(0); } 40% { transform: translateY(-4px) rotate(-4deg); } }
+                .working .trail svg { opacity: 0.2; animation: step 1.2s ease-in-out infinite; }
+                .working .trail svg:nth-child(2) { animation-delay: 0.2s; }
+                .working .trail svg:nth-child(3) { animation-delay: 0.4s; }
+                .working .trail svg:nth-child(4) { animation-delay: 0.6s; }
+                @keyframes step { 0%, 100% { opacity: 0.2; } 30% { opacity: 1; } }
+                .clouds { animation: drift 9s ease-in-out infinite alternate; }
+                @keyframes drift { to { transform: translateX(-14px); } }
+            }
+        </style>
+    </head>
+    <body>
+        <svg width="0" height="0" style="position:absolute" aria-hidden="true">
+<defs>
+<filter id="crayon" x="-10%" y="-10%" width="120%" height="120%">
+  <feTurbulence type="fractalNoise" baseFrequency="1.4" numOctaves="1" seed="7" result="n"/>
+  <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -1.1 1.55" result="m"/>
+  <feComposite in="SourceGraphic" in2="m" operator="in" result="t"/>
+  <feTurbulence type="fractalNoise" baseFrequency="0.04" numOctaves="2" seed="5" result="w"/>
+  <feDisplacementMap in="t" in2="w" scale="3.2"/>
+</filter>
+<filter id="crayon-sm" x="-10%" y="-10%" width="120%" height="120%">
+  <feTurbulence type="fractalNoise" baseFrequency="2.2" numOctaves="1" seed="3" result="n"/>
+  <feColorMatrix in="n" type="matrix" values="0 0 0 0 1  0 0 0 0 1  0 0 0 0 1  0 0 0 -0.8 1.6" result="m"/>
+  <feComposite in="SourceGraphic" in2="m" operator="in" result="t"/>
+  <feTurbulence type="fractalNoise" baseFrequency="0.06" numOctaves="2" seed="5" result="w"/>
+  <feDisplacementMap in="t" in2="w" scale="2"/>
+</filter>
+<filter id="wobble"><feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="2" seed="3"/><feDisplacementMap in="SourceGraphic" scale="3"/></filter>
+</defs>
+<symbol id="head-dog" viewBox="-36 -70 72 74"><g filter="url(#crayon-sm)">
+      <path d="M-24 -48 Q-34 -46 -32 -26 Q-30 -12 -22 -16 Z" fill="#9a6a3f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M24 -48 Q34 -46 32 -26 Q30 -12 22 -16 Z" fill="#9a6a3f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-22 -50 Q0 -58 22 -50 Q27 -30 21 -8 Q0 2 -21 -8 Q-27 -30 -22 -50 Z" fill="#e8b179" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-11 -22 Q0 -30 11 -22 Q12 -6 0 -5 Q-12 -6 -11 -22 Z" fill="#fbe8cf" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-9" cy="-32" r="2.4" fill="#3a3631"/><circle cx="9" cy="-32" r="2.4" fill="#3a3631"/><path d="M-3.5 -21 h7 l-3.5 4 Z" fill="#3a3631" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -17 v3 M-4 -12 q4 3 8 0" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-16" cy="-22" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="16" cy="-22" rx="5" ry="3" fill="#f7b9c4"/></g></symbol>
+<symbol id="head-cat" viewBox="-36 -70 72 74"><g filter="url(#crayon-sm)">
+      <path d="M-24 -40 L-22 -64 L-6 -52 Z" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M24 -40 L22 -64 L6 -52 Z" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-25 -48 Q-24 -56 0 -55 Q24 -56 25 -48 Q28 -24 22 -10 Q0 -2 -22 -10 Q-28 -24 -25 -48 Z" fill="#f6cd5c" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-6 -54 v6 M0 -55 v7 M6 -54 v6" stroke="#c9902d" stroke-width="1.9" stroke-linecap="round"/>
+      <circle cx="-10" cy="-32" r="2.4" fill="#3a3631"/><circle cx="10" cy="-32" r="2.4" fill="#3a3631"/><path d="M-2.5 -24 h5 l-2.5 3 Z" fill="#e57c8f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -21 q-3 4 -6 1 M0 -21 q3 4 6 1" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-30 -26 h7 M-30 -21 h7 M23 -26 h7 M23 -21 h7" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.3"/><ellipse cx="-17" cy="-20" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="17" cy="-20" rx="5" ry="3" fill="#f7b9c4"/></g></symbol>
+<symbol id="head-rabbit" viewBox="-40 -94 80 98"><g filter="url(#crayon-sm)">
+      <path d="M-14 -46 Q-20 -88 -9 -90 Q0 -88 -4 -48 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 -46 Q20 -88 9 -90 Q0 -88 4 -48 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-11 -54 Q-14 -80 -9 -82 Q-5 -80 -7 -54 Z" fill="#f6b3bf"/><path d="M11 -54 Q14 -80 9 -82 Q5 -80 7 -54 Z" fill="#f6b3bf"/>
+      <path d="M-20 -46 Q0 -56 20 -46 Q25 -24 18 -8 Q0 0 -18 -8 Q-25 -24 -20 -46 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-8" cy="-30" r="2.4" fill="#3a3631"/><circle cx="8" cy="-30" r="2.4" fill="#3a3631"/><path d="M-2.5 -22 h5 l-2.5 3 Z" fill="#ee8fa0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -19 q-3 3 -5 1 M0 -19 q3 3 5 1" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-14" cy="-20" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="14" cy="-20" rx="5" ry="3" fill="#f7b9c4"/></g></symbol>
+<symbol id="head-hamster" viewBox="-36 -70 72 74"><g filter="url(#crayon-sm)">
+      <circle cx="-17" cy="-47" r="6.5" fill="#e9a96a" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><circle cx="17" cy="-47" r="6.5" fill="#e9a96a" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-24 -42 Q0 -56 24 -42 Q29 -22 22 -7 Q0 3 -22 -7 Q-29 -22 -24 -42 Z" fill="#efb578" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-24 -20 Q0 -32 24 -20 Q20 -6 0 -3 Q-20 -6 -24 -20 Z" fill="#fff6e8" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-9" cy="-31" r="2.4" fill="#3a3631"/><circle cx="9" cy="-31" r="2.4" fill="#3a3631"/><path d="M-2 -23 h4 l-2 2.5 Z" fill="#ee8fa0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -20.5 q-3 3 -5 1 M0 -20.5 q3 3 5 1" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <ellipse cx="-17" cy="-17" rx="6" ry="4" fill="#f7b9c4"/><ellipse cx="17" cy="-17" rx="6" ry="4" fill="#f7b9c4"/></g></symbol>
+<symbol id="head-guineapig" viewBox="-36 -70 72 74"><g filter="url(#crayon-sm)">
+      <ellipse cx="-21" cy="-40" rx="7" ry="5" fill="#f3d2b0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round" transform="rotate(-25 -21 -40)"/>
+      <ellipse cx="21" cy="-40" rx="7" ry="5" fill="#f3d2b0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round" transform="rotate(25 21 -40)"/>
+      <path d="M-28 -30 Q-26 -48 0 -48 Q26 -48 28 -30 Q30 -12 18 -6 Q0 0 -18 -6 Q-30 -12 -28 -30 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-27 -36 Q-24 -47 -6 -47 Q-4 -34 -10 -22 Q-20 -18 -28 -24 Z" fill="#c98648"/>
+      <path d="M27 -34 Q24 -46 12 -47 Q8 -38 14 -26 Q22 -22 28 -26 Z" fill="#3a3631" opacity=".85"/>
+      <path d="M-28 -30 Q-26 -48 0 -48 Q26 -48 28 -30 Q30 -12 18 -6 Q0 0 -18 -6 Q-30 -12 -28 -30 Z" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-11" cy="-29" r="2.4" fill="#3a3631"/><circle cx="11" cy="-29" r="2.4" fill="#3a3631"/><path d="M-2.5 -21 h5 l-2.5 3 Z" fill="#ee8fa0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -18 q-3 3 -5 1 M0 -18 q3 3 5 1" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-17" cy="-17" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="17" cy="-17" rx="5" ry="3" fill="#f7b9c4"/></g></symbol>
+<symbol id="head-puppy" viewBox="-36 -70 72 74"><g filter="url(#crayon-sm)">
+      <path d="M-20 -44 Q-34 -44 -32 -24 Q-30 -12 -21 -17 Z" fill="#4a3f38" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M20 -44 Q34 -44 32 -24 Q30 -12 21 -17 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-21 -46 Q0 -56 21 -46 Q26 -28 20 -9 Q0 0 -20 -9 Q-26 -28 -21 -46 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M2 -52 Q14 -54 18 -44 Q17 -34 8 -33 Q2 -38 2 -52 Z" fill="#d9a066"/>
+      <circle cx="-8" cy="-31" r="2.4" fill="#3a3631"/><circle cx="9" cy="-31" r="2.4" fill="#3a3631"/><ellipse cx="0" cy="-21" rx="3.4" ry="2.5" fill="#3a3631"/>
+      <path d="M0 -18.5 v2.5 M-4 -14 q4 3 8 0" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-2 -13 q2 6 4 0" fill="#f28a9b" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.4"/><ellipse cx="-15" cy="-20" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="15" cy="-20" rx="5" ry="3" fill="#f7b9c4"/></g></symbol>
+<symbol id="head-parakeet" viewBox="-36 -70 72 74"><g filter="url(#crayon-sm)">
+      <path d="M-4 -56 Q0 -66 6 -58 Q10 -66 14 -54" fill="#8fd16f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-22 -36 Q-22 -56 0 -56 Q22 -56 22 -36 Q24 -16 14 -7 Q0 0 -14 -7 Q-24 -16 -22 -36 Z" fill="#8fd16f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-18 -30 Q-16 -50 0 -50 Q16 -50 18 -30 Q16 -12 0 -9 Q-16 -12 -18 -30 Z" fill="#f7e27c" stroke="none"/>
+      <path d="M-10 -50 q3 -2 6 0 M2 -51 q3 -2 6 0 M-14 -45 q3 -2 6 0 M8 -45 q3 -2 6 0" fill="none" stroke="#3a3631" stroke-width="1.3" stroke-linecap="round"/>
+      <circle cx="-9" cy="-33" r="2.4" fill="#3a3631"/><circle cx="9" cy="-33" r="2.4" fill="#3a3631"/>
+      <path d="M-4 -28 Q0 -31 4 -28 Q4 -21 0 -18 Q-4 -21 -4 -28 Z" fill="#f2a64e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-7" cy="-14" r="2.2" fill="#5b84c9"/><circle cx="7" cy="-14" r="2.2" fill="#5b84c9"/>
+      <ellipse cx="-15" cy="-24" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="15" cy="-24" rx="5" ry="3" fill="#f7b9c4"/></g></symbol>
+<symbol id="ico-paw" viewBox="0 0 24 24"><g fill="currentColor"><ellipse cx="6" cy="9" rx="2.2" ry="2.8"/><ellipse cx="10" cy="5.5" rx="2.2" ry="2.8"/><ellipse cx="14.5" cy="5.5" rx="2.2" ry="2.8"/><ellipse cx="18.5" cy="9" rx="2.2" ry="2.8"/><path d="M12.2 11c-3 0-6.2 4.3-6.2 6.8 0 2 1.6 2.7 3 2.7 1.3 0 2.1-.7 3.2-.7s1.9.7 3.2.7c1.4 0 3-.7 3-2.7 0-2.5-3.2-6.8-6.2-6.8z"/></g></symbol>
+<symbol id="ico-house" viewBox="0 0 24 24"><g stroke="#262421" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M4 11 L12 4 L20 11 Z" fill="#f2a7b5"/><path d="M6 11 h12 v9 h-12 Z" fill="#fff"/><path d="M10.5 20 v-5 h3 v5" fill="#8cc66a"/></g></symbol>
+<symbol id="ico-clock" viewBox="0 0 24 24"><g stroke="#262421" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" fill="none"><circle cx="12" cy="12" r="8.5"/><path d="M12 7 v5 l3.5 2"/></g></symbol>
+<symbol id="ico-pin" viewBox="0 0 24 24"><g stroke="#262421" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" fill="none"><path d="M12 21 C7 15 5.5 12 5.5 9.5 A6.5 6.5 0 0 1 18.5 9.5 C18.5 12 17 15 12 21 Z"/><circle cx="12" cy="9.5" r="2.3"/></g></symbol>
+<symbol id="ico-folder" viewBox="0 0 24 24"><g stroke="#262421" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round"><path d="M3.5 7 h6 l2 2 h9 v10 h-17 Z" fill="#f8d96b"/></g></symbol>
+<symbol id="ico-link" viewBox="0 0 24 24"><g stroke="#262421" stroke-width="1.8" stroke-linejoin="round" stroke-linecap="round" fill="none"><path d="M10 14 a4 4 0 0 0 5.6 0 l3 -3 a4 4 0 0 0 -5.6 -5.6 l-1 1"/><path d="M14 10 a4 4 0 0 0 -5.6 0 l-3 3 a4 4 0 0 0 5.6 5.6 l1 -1"/></g></symbol>
+
+        </svg>
+        <div class="page">
+            <header class="poster">
+                <svg class="clouds" viewBox="0 0 260 150" aria-hidden="true" filter="url(#wobble)"><g stroke="#262421" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round">
+  <circle cx="190" cy="92" r="26" fill="#f8d96b"/>
+  <path d="M190 52 v-10 M190 132 v10 M150 92 h-10 M230 92 h10 M162 64 l-7 -7 M218 120 l7 7 M218 64 l7 -7 M162 120 l-7 7" fill="none"/>
+  <circle cx="181" cy="88" r="2.4" fill="#262421" stroke="none"/><circle cx="199" cy="88" r="2.4" fill="#262421" stroke="none"/>
+  <path d="M182 98 q8 7 16 0" fill="none"/>
+  <circle cx="175" cy="97" r="3.4" fill="#f5a3b0" stroke="none"/><circle cx="205" cy="97" r="3.4" fill="#f5a3b0" stroke="none"/>
+  <path d="M60 30 q5 -6 10 0 q5 -6 10 0 M96 52 q4 -5 8 0 q4 -5 8 0" fill="none" stroke-width="2"/>
+</g><g fill="#fff" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round">
+  <path d="M20 60 q-14 -2 -10 -16 q4 -12 18 -8 q4 -18 24 -14 q16 3 16 18 q14 -2 16 10 q2 12 -12 12 Z"/>
+  <path d="M160 42 q-10 -1 -8 -12 q3 -9 13 -6 q3 -13 18 -10 q12 2 12 13 q10 -1 12 8 q1 9 -9 9 Z"/>
+</g></svg>
+                <div class="poster-top">
+                    <div>
+                        <div class="title wordmark"><span class="g">Paw</span><span class="r">print</span></div>
+                        <p class="hand club">shelter data research club</p>
+                        <div class="note">
+                            <h1>Why do some shelter animals wait so long for a home?</h1>
+                            <p>
+                                Ask a question about shelter stays and outcomes. Our little research team digs through
+                                <strong>twelve years of real intake and outcome records</strong> at the same time, then
+                                writes you a report where every number links to the query that found it. Made for
+                                <strong>shelter volunteers, staff and rescue coordinators</strong> deciding which animals
+                                need extra help, and for <strong>adopters</strong> curious who gets overlooked.
+                            </p>
+                        </div>
+                    </div>
+
+                <form class="card ask" id="ask">
+                        <div class="title ask-title"><span class="g">Ask</span> <span class="r">the team</span></div>
+                        <label for="question" id="ask-label" class="hand">what do you want to find out?</label>
+                        <div class="ask-row">
+                            <input id="question" autocomplete="off" placeholder="e.g. Which dogs wait longest to be adopted, and why?" />
+                            <button id="send" class="btn" type="submit">Dig in</button>
+                        </div>
+                        <p class="hand examples-label">or try one of these</p>
+                        <div class="examples" id="examples" aria-label="Example questions">
+                            <button type="button">What factors are associated with longer shelter stays for dogs?</button>
+                            <button type="button">How do senior cats fare compared with kittens and adult cats?</button>
+                            <button type="button">Does the time of year change how many cats come in and how fast they leave?</button>
+                            <button type="button">How have adoption and euthanasia rates changed since 2014?</button>
+                            <button type="button" class="vague" title="Too vague on purpose: watch the Lead ask what you mean">Is the shelter doing better?</button>
+                        </div>
+                        <p class="hand hint">a full report takes one to three minutes. the dashed one is vague on purpose! after a report, ask a follow-up like "what about cats?" and the team remembers what you were talking about.</p>
+                        <button type="button" id="new-chat" class="hand new-chat" hidden>start a new conversation</button>
+                    </form>
+                </div>
+                <svg class="scene" viewBox="0 48 1200 292" preserveAspectRatio="xMidYMax meet" aria-hidden="true">
+  <g filter="url(#wobble)">
+  <path d="M-10 150 Q180 92 380 128 Q560 160 720 110 Q920 52 1210 118 V350 H-10 Z" fill="#7cc45f" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <g transform="translate(150 66)">
+    <path d="M0 42 L36 12 L72 42 Z" fill="#f2a7b5" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="6" y="42" width="60" height="46" fill="#fffaf1" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+    <rect x="16" y="54" width="14" height="13" fill="#b7dcf5" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+    <path d="M23 54 v13 M16 60.5 h14" stroke="#262421" stroke-width="1.6"/>
+    <rect x="40" y="58" width="14" height="30" fill="#f2c14e" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  </g>
+  <g stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M286 108 v26" fill="none"/><circle cx="286" cy="94" r="15" fill="#5aa64a"/><path d="M314 112 v22" fill="none"/><circle cx="314" cy="100" r="12" fill="#5aa64a"/></g>
+  <g stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M1056 92 v24" fill="none"/><circle cx="1056" cy="80" r="13" fill="#5aa64a"/></g>
+  <path d="M-10 230 Q300 176 620 196 Q900 214 1210 168 V350 H-10 Z" fill="#95d36d" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <g fill="#3f8f45"><path d="M90 268 l4 -10 l4 10 M210 300 l4 -10 l4 10 M1120 250 l4 -10 l4 10 M300 318 l4 -10 l4 10"/></g>
+  <g stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"><path d="M64 300 v-16" fill="none"/><circle cx="64" cy="280" r="6" fill="#f8d96b"/><path d="M1150 300 v-14" fill="none"/><circle cx="1150" cy="282" r="6" fill="#f2a7b5"/></g>
+  <path d="M540 230 L1090 214 L1160 334 L455 340 Z" fill="#f8d96b" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  <path d="M630 227 L600 338 M720 224 L704 337 M810 222 L806 336 M900 219 L910 336 M990 217 L1012 335 M520 262 L1110 250 M492 300 L1134 292" stroke="#e9b93a" stroke-width="5" fill="none"/>
+  <path d="M540 230 L1090 214 L1160 334 L455 340 Z" fill="none" stroke="#262421" stroke-width="2.6" stroke-linejoin="round" stroke-linecap="round"/>
+  </g>
+  <g filter="url(#crayon)">
+<g transform="translate(772 290) scale(1.1224)"><g transform="translate(0 -82.7)"><path d="M-13 49 v20.7 h11 v-20.7 Z" fill="#4f6b8f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M2 49 v20.7 h11 v-20.7 Z" fill="#4f6b8f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-8" cy="73.1" rx="10" ry="5" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="8" cy="73.1" rx="10" ry="5" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-15 2 Q-17 26.5 -16 53 h32 Q17 26.5 15 2 Z" fill="#e2553f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#e2553f" stroke-width="7" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#e2553f" stroke-width="7" stroke-linecap="round"/><g transform="translate(14 18) rotate(8)"><rect width="18" height="22" rx="2" fill="#c98b55" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><rect x="3" y="4" width="12" height="15" fill="#fff"/><path d="M5 9 h8 M5 13 h6" stroke="#3a3631" stroke-width="1.3"/></g><g transform="translate(0 9) scale(1.05)">
+      <path d="M-24 -48 Q-34 -46 -32 -26 Q-30 -12 -22 -16 Z" fill="#9a6a3f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M24 -48 Q34 -46 32 -26 Q30 -12 22 -16 Z" fill="#9a6a3f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-22 -50 Q0 -58 22 -50 Q27 -30 21 -8 Q0 2 -21 -8 Q-27 -30 -22 -50 Z" fill="#e8b179" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-11 -22 Q0 -30 11 -22 Q12 -6 0 -5 Q-12 -6 -11 -22 Z" fill="#fbe8cf" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-9" cy="-32" r="2.4" fill="#3a3631"/><circle cx="9" cy="-32" r="2.4" fill="#3a3631"/><path d="M-3.5 -21 h7 l-3.5 4 Z" fill="#3a3631" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -17 v3 M-4 -12 q4 3 8 0" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-16" cy="-22" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="16" cy="-22" rx="5" ry="3" fill="#f7b9c4"/></g></g></g>
+<g transform="translate(905 300) scale(1.1224)"><g transform="translate(0 -82.7)"><path d="M-13 49 v20.7 h11 v-20.7 Z" fill="#7fa8e0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M2 49 v20.7 h11 v-20.7 Z" fill="#7fa8e0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-8" cy="73.1" rx="10" ry="5" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="8" cy="73.1" rx="10" ry="5" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-14 2 L14 2 L26 55 Q0 63 -26 55 Z" fill="#7fa8e0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-14 2 h28 l2 23.85 h-32 Z" fill="#f8d96b" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><circle cx="-14" cy="39.75" r="2.2" fill="#fff"/><circle cx="-4" cy="39.75" r="2.2" fill="#fff"/><circle cx="6" cy="39.75" r="2.2" fill="#fff"/><circle cx="16" cy="39.75" r="2.2" fill="#fff"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#f8d96b" stroke-width="7" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#f8d96b" stroke-width="7" stroke-linecap="round"/><g transform="translate(-30 16)"><rect width="22" height="17" rx="2" fill="#e2553f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 4 h14" stroke="#fff" stroke-width="2"/></g><g transform="translate(0 9) scale(1.05)">
+      <path d="M-14 -46 Q-20 -88 -9 -90 Q0 -88 -4 -48 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M14 -46 Q20 -88 9 -90 Q0 -88 4 -48 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-11 -54 Q-14 -80 -9 -82 Q-5 -80 -7 -54 Z" fill="#f6b3bf"/><path d="M11 -54 Q14 -80 9 -82 Q5 -80 7 -54 Z" fill="#f6b3bf"/>
+      <path d="M-20 -46 Q0 -56 20 -46 Q25 -24 18 -8 Q0 0 -18 -8 Q-25 -24 -20 -46 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-8" cy="-30" r="2.4" fill="#3a3631"/><circle cx="8" cy="-30" r="2.4" fill="#3a3631"/><path d="M-2.5 -22 h5 l-2.5 3 Z" fill="#ee8fa0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -19 q-3 3 -5 1 M0 -19 q3 3 5 1" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-14" cy="-20" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="14" cy="-20" rx="5" ry="3" fill="#f7b9c4"/></g></g></g>
+<g transform="translate(625 322) scale(1.22)"><g transform="translate(0 -82.7)"><path d="M-13 49 v20.7 h11 v-20.7 Z" fill="#5b7fc7" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M2 49 v20.7 h11 v-20.7 Z" fill="#5b7fc7" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-8" cy="73.1" rx="10" ry="5" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="8" cy="73.1" rx="10" ry="5" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-15 2 Q-17 26.5 -16 53 h32 Q17 26.5 15 2 Z" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#ffffff" stroke-width="7" stroke-linecap="round"/><g transform="translate(-28 20) rotate(-10)"><rect width="20" height="15" rx="1.5" fill="#fff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M4 5 h12 M4 9 h9" stroke="#3a3631" stroke-width="1.3"/></g><g transform="translate(0 9) scale(1.05)">
+      <path d="M-24 -40 L-22 -64 L-6 -52 Z" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M24 -40 L22 -64 L6 -52 Z" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-25 -48 Q-24 -56 0 -55 Q24 -56 25 -48 Q28 -24 22 -10 Q0 -2 -22 -10 Q-28 -24 -25 -48 Z" fill="#f6cd5c" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-6 -54 v6 M0 -55 v7 M6 -54 v6" stroke="#c9902d" stroke-width="1.9" stroke-linecap="round"/>
+      <circle cx="-10" cy="-32" r="2.4" fill="#3a3631"/><circle cx="10" cy="-32" r="2.4" fill="#3a3631"/><path d="M-2.5 -24 h5 l-2.5 3 Z" fill="#e57c8f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -21 q-3 4 -6 1 M0 -21 q3 4 6 1" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-30 -26 h7 M-30 -21 h7 M23 -26 h7 M23 -21 h7" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round" stroke-width="1.3"/><ellipse cx="-17" cy="-20" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="17" cy="-20" rx="5" ry="3" fill="#f7b9c4"/></g></g></g>
+<g transform="translate(1045 326) scale(1.22)"><g transform="translate(0 -82.7)"><path d="M-13 49 v20.7 h11 v-20.7 Z" fill="#c9493a" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M2 49 v20.7 h11 v-20.7 Z" fill="#c9493a" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-8" cy="73.1" rx="10" ry="5" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="8" cy="73.1" rx="10" ry="5" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-15 2 Q-17 26.5 -16 53 h32 Q17 26.5 15 2 Z" fill="#a9cf8e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#a9cf8e" stroke-width="7" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#a9cf8e" stroke-width="7" stroke-linecap="round"/><g transform="translate(22 24)"><circle r="8" fill="#d9eefb" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M5 6 l7 8" stroke="#3a3631" stroke-width="3.5" stroke-linecap="round"/></g><g transform="translate(0 9) scale(1.05)">
+      <circle cx="-17" cy="-47" r="6.5" fill="#e9a96a" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><circle cx="17" cy="-47" r="6.5" fill="#e9a96a" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-24 -42 Q0 -56 24 -42 Q29 -22 22 -7 Q0 3 -22 -7 Q-29 -22 -24 -42 Z" fill="#efb578" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-24 -20 Q0 -32 24 -20 Q20 -6 0 -3 Q-20 -6 -24 -20 Z" fill="#fff6e8" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-9" cy="-31" r="2.4" fill="#3a3631"/><circle cx="9" cy="-31" r="2.4" fill="#3a3631"/><path d="M-2 -23 h4 l-2 2.5 Z" fill="#ee8fa0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -20.5 q-3 3 -5 1 M0 -20.5 q3 3 5 1" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <ellipse cx="-17" cy="-17" rx="6" ry="4" fill="#f7b9c4"/><ellipse cx="17" cy="-17" rx="6" ry="4" fill="#f7b9c4"/></g></g></g>
+<g transform="translate(470 332) scale(1.159)"><g transform="translate(0 -82.7)"><path d="M-13 49 v20.7 h11 v-20.7 Z" fill="#8e6343" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M2 49 v20.7 h11 v-20.7 Z" fill="#8e6343" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-8" cy="73.1" rx="10" ry="5" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="8" cy="73.1" rx="10" ry="5" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-15 2 Q-17 26.5 -16 53 h32 Q17 26.5 15 2 Z" fill="#b7dcf5" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#b7dcf5" stroke-width="7" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#b7dcf5" stroke-width="7" stroke-linecap="round"/><g transform="translate(18 20) rotate(25)"><rect width="6" height="26" fill="#f2c14e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M0 26 l3 7 l3 -7 Z" fill="#fbe2c2" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/></g><g transform="translate(0 9) scale(1.05)">
+      <path d="M-4 -56 Q0 -66 6 -58 Q10 -66 14 -54" fill="#8fd16f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-22 -36 Q-22 -56 0 -56 Q22 -56 22 -36 Q24 -16 14 -7 Q0 0 -14 -7 Q-24 -16 -22 -36 Z" fill="#8fd16f" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-18 -30 Q-16 -50 0 -50 Q16 -50 18 -30 Q16 -12 0 -9 Q-16 -12 -18 -30 Z" fill="#f7e27c" stroke="none"/>
+      <path d="M-10 -50 q3 -2 6 0 M2 -51 q3 -2 6 0 M-14 -45 q3 -2 6 0 M8 -45 q3 -2 6 0" fill="none" stroke="#3a3631" stroke-width="1.3" stroke-linecap="round"/>
+      <circle cx="-9" cy="-33" r="2.4" fill="#3a3631"/><circle cx="9" cy="-33" r="2.4" fill="#3a3631"/>
+      <path d="M-4 -28 Q0 -31 4 -28 Q4 -21 0 -18 Q-4 -21 -4 -28 Z" fill="#f2a64e" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-7" cy="-14" r="2.2" fill="#5b84c9"/><circle cx="7" cy="-14" r="2.2" fill="#5b84c9"/>
+      <ellipse cx="-15" cy="-24" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="15" cy="-24" rx="5" ry="3" fill="#f7b9c4"/></g></g></g>
+<g transform="translate(345 334) scale(1.098)"><g transform="translate(0 -82.7)"><path d="M-13 49 v20.7 h11 v-20.7 Z" fill="#5b7fc7" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M2 49 v20.7 h11 v-20.7 Z" fill="#5b7fc7" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-8" cy="73.1" rx="10" ry="5" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="8" cy="73.1" rx="10" ry="5" fill="#ffffff" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-15 2 Q-17 26.5 -16 53 h32 Q17 26.5 15 2 Z" fill="#f2a7b5" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M-14 8 Q-26 23.85 -22 38.16" fill="none" stroke="#f2a7b5" stroke-width="7" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#3a3631" stroke-width="8.9" stroke-linecap="round"/><path d="M14 8 Q26 23.85 22 38.16" fill="none" stroke="#f2a7b5" stroke-width="7" stroke-linecap="round"/><g transform="translate(-18 22)"><rect width="36" height="22" rx="2" fill="#cfd6e3" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><rect x="4" y="4" width="28" height="14" fill="#b7dcf5"/></g><g transform="translate(0 9) scale(1.05)">
+      <ellipse cx="-21" cy="-40" rx="7" ry="5" fill="#f3d2b0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round" transform="rotate(-25 -21 -40)"/>
+      <ellipse cx="21" cy="-40" rx="7" ry="5" fill="#f3d2b0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round" transform="rotate(25 21 -40)"/>
+      <path d="M-28 -30 Q-26 -48 0 -48 Q26 -48 28 -30 Q30 -12 18 -6 Q0 0 -18 -6 Q-30 -12 -28 -30 Z" fill="#fffaf1" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M-27 -36 Q-24 -47 -6 -47 Q-4 -34 -10 -22 Q-20 -18 -28 -24 Z" fill="#c98648"/>
+      <path d="M27 -34 Q24 -46 12 -47 Q8 -38 14 -26 Q22 -22 28 -26 Z" fill="#3a3631" opacity=".85"/>
+      <path d="M-28 -30 Q-26 -48 0 -48 Q26 -48 28 -30 Q30 -12 18 -6 Q0 0 -18 -6 Q-30 -12 -28 -30 Z" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <circle cx="-11" cy="-29" r="2.4" fill="#3a3631"/><circle cx="11" cy="-29" r="2.4" fill="#3a3631"/><path d="M-2.5 -21 h5 l-2.5 3 Z" fill="#ee8fa0" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/>
+      <path d="M0 -18 q-3 3 -5 1 M0 -18 q3 3 5 1" fill="none" stroke="#3a3631" stroke-width="1.9" stroke-linejoin="round" stroke-linecap="round"/><ellipse cx="-17" cy="-17" rx="5" ry="3" fill="#f7b9c4"/><ellipse cx="17" cy="-17" rx="5" ry="3" fill="#f7b9c4"/></g></g></g>
+  </g>
+</svg>
+            </header>
+
+
+
+            <div class="workspace">
+                <main>
+            <ol class="tiles" aria-label="How a question is answered, and the data">
+                <li class="tile">
+                    <div class="tile-head"><svg><use href="#head-puppy" /></svg><div><span class="step">step 1</span><h2>The Clarifier listens</h2></div></div>
+                    <p>It reads your question with the conversation so far. Too vague? It asks you one thing. Otherwise it writes the team a clear brief.</p>
+                </li>
+                <li class="tile">
+                    <div class="tile-head"><svg><use href="#head-dog" /></svg><div><span class="step">step 2</span><h2>The Lead plans</h2></div></div>
+                    <p>It splits the brief into 2 to 4 angles. If the findings leave a gap, it sends another round, up to three.</p>
+                </li>
+                <li class="tile">
+                    <div class="tile-head"><svg><use href="#head-cat" /></svg><div><span class="step">step 3</span><h2>Researchers dig together</h2></div></div>
+                    <p>Each takes one angle and writes its own SQL, all at once, starting fresh with only its task.</p>
+                </li>
+                <li class="tile">
+                    <div class="tile-head"><svg><use href="#head-parakeet" /></svg><div><span class="step">step 4</span><h2>The Writer reports</h2></div></div>
+                    <p>Every number cites its query. A number that doesn't match its query's result goes back for a rewrite.</p>
+                </li>
+                <li class="tile tile-wide">
+                    <div class="tile-head"><svg><use href="#ico-folder" /></svg><div><span class="step">the records</span><h2>What we dig through</h2></div></div>
+                    <ul class="facts">
+                        <li><svg class="ico"><use href="#ico-house" /></svg>Austin Animal Center, TX</li>
+                        <li><svg class="ico"><use href="#ico-paw" /></svg><b id="stat-stays">about 190,000</b>&nbsp;stays</li>
+                        <li><svg class="ico"><use href="#ico-clock" /></svg><span><b id="stat-since">Oct 2013</b> to <b id="stat-through">today</b></span></li>
+                        <li><svg class="ico"><use href="#ico-link" /></svg><a href="https://data.austintexas.gov/d/9t4d-g238" target="_blank" rel="noopener">City of Austin open data</a></li>
+                    </ul>
+                </li>
+            </ol>
+
+
+                    <div class="thread" id="thread" aria-live="polite"></div>
+                </main>
+
+                <aside class="card board" aria-label="Research in progress">
+                    <div class="board-head">
+                        <div class="title"><span class="g">Research</span> <span class="r">board</span></div>
+                        <span id="status"></span>
+                    </div>
+                    <div id="board">
+                        <div class="board-empty">
+                            <div class="nap"><svg><use href="#head-cat" /></svg><svg><use href="#head-rabbit" /></svg><svg><use href="#head-hamster" /></svg></div>
+                            The team is napping. Ask a question and each researcher's queries show up here as they run.
+                        </div>
+                    </div>
+                    <button type="button" id="toggle-context">peek at what each agent saw</button>
+                </aside>
+            </div>
+
+            <footer>
+                <svg><use href="#ico-paw" /></svg>
+                <span>The data covers one shelter: other shelters may differ. Breed and color are what staff recorded by eye.
+                The records hold no temperament, adopter or after-adoption information, so the team will say when a
+                question needs data it doesn't have. Associations here are not causes.</span>
+            </footer>
+        </div>
+
+        <script src="/context-panel.js"></script>
+        <script>
+            const $ = (id) => document.getElementById(id);
+            let sessionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+            let source = null;
+            let runId = null;
+            let clarifying = false;
+            let timer = null;
+            const lanes = new Map(); // agent name -> lane element
+            let reports = 0;
+
+            // --- Header stats ---
+            fetch("/stats")
+                .then((r) => r.json())
+                .then((s) => {
+                    const month = (d) => new Date(d + "T12:00:00").toLocaleDateString("en-US", { month: "short", year: "numeric" });
+                    $("stat-stays").textContent = s.stays.toLocaleString("en-US");
+                    $("stat-since").textContent = month(s.since);
+                    $("stat-through").textContent = new Date(s.through + "T12:00:00").toLocaleDateString("en-US", { month: "short", day: "numeric", year: "numeric" });
+                })
+                .catch(() => {});
+
+            // --- Helpers ---
+            function el(tag, cls, text) {
+                const node = document.createElement(tag);
+                if (cls) node.className = cls;
+                if (text !== undefined) node.textContent = text;
+                return node;
+            }
+            function bubble(cls, text, title) {
+                const b = el("div", "bubble " + cls);
+                let target = b;
+                if (cls === "lead") {
+                    b.appendChild(avatar("Clarifier"));
+                    target = el("div");
+                    b.appendChild(target);
+                }
+                if (title) target.appendChild(el("b", "", title));
+                target.append(text);
+                $("thread").appendChild(b);
+                const w = $("working");
+                if (w) $("thread").appendChild(w);
+                b.scrollIntoView({ block: "nearest", behavior: "smooth" });
+                return b;
+            }
+            function citeChip(id) {
+                const chip = el("button", "cite");
+                chip.append(icon("ico-paw"), id);
+                chip.type = "button";
+                chip.dataset.q = id;
+                chip.setAttribute("aria-label", "Show query " + id);
+                return chip;
+            }
+            // Turn "[Q3]" in rendered text into tag buttons
+            function chipify(root) {
+                const walker = document.createTreeWalker(root, NodeFilter.SHOW_TEXT);
+                const nodes = [];
+                while (walker.nextNode()) if (/\[Q\d+\]/.test(walker.currentNode.nodeValue)) nodes.push(walker.currentNode);
+                for (const node of nodes) {
+                    const frag = document.createDocumentFragment();
+                    node.nodeValue.split(/(\[Q\d+\])/).forEach((part) => {
+                        const m = part.match(/^\[(Q\d+)\]$/);
+                        frag.append(m ? citeChip(m[1]) : part);
+                    });
+                    node.replaceWith(frag);
+                }
+            }
+            // The Writer's markdown: headings, paragraphs, lists, tables, bold and italics. HTML is escaped
+            // first, so model output can't inject markup.
+            function inline(text) {
+                return text
+                    .replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;")
+                    .replace(/\*\*(.+?)\*\*/g, "<strong>$1</strong>")
+                    .replace(/(^|[^*])\*(?!\s)(.+?)\*/g, "$1<em>$2</em>")
+                    .replace(/`([^`]+)`/g, "<code>$1</code>");
+            }
+            function markdown(md) {
+                const out = [];
+                const lines = md.replace(/\r/g, "").split("\n");
+                for (let i = 0; i < lines.length; ) {
+                    const line = lines[i];
+                    let m;
+                    if (!line.trim()) { i++; continue; }
+                    if ((m = line.match(/^(#{1,4})\s+(.*)$/))) {
+                        const level = Math.min(m[1].length + 1, 4);
+                        out.push(`<h${level}>${inline(m[2])}</h${level}>`);
+                        i++;
+                    } else if (/^\s*[-*]\s+/.test(line) || /^\s*\d+[.)]\s+/.test(line)) {
+                        const ordered = /^\s*\d+[.)]\s+/.test(line);
+                        const items = [];
+                        while (i < lines.length && (/^\s*([-*]|\d+[.)])\s+/.test(lines[i]) || /^\s{2,}\S/.test(lines[i]))) {
+                            if (/^\s*([-*]|\d+[.)])\s+/.test(lines[i])) items.push(lines[i].replace(/^\s*([-*]|\d+[.)])\s+/, ""));
+                            else items[items.length - 1] += " " + lines[i].trim();
+                            i++;
+                        }
+                        const tag = ordered ? "ol" : "ul";
+                        out.push(`<${tag}>${items.map((t) => `<li>${inline(t)}</li>`).join("")}</${tag}>`);
+                    } else if (/^\s*\|/.test(line)) {
+                        const rows = [];
+                        while (i < lines.length && /^\s*\|/.test(lines[i])) rows.push(lines[i++]);
+                        const cells = (r) => r.trim().replace(/^\||\|$/g, "").split("|").map((c) => inline(c.trim()));
+                        const body = rows.filter((r) => !/^\s*\|?[\s:|-]+\|?\s*$/.test(r));
+                        const [head, ...rest] = body;
+                        out.push("<table><thead><tr>" + cells(head).map((c) => `<th>${c}</th>`).join("") + "</tr></thead><tbody>" +
+                            rest.map((r) => "<tr>" + cells(r).map((c) => `<td>${c}</td>`).join("") + "</tr>").join("") + "</tbody></table>");
+                    } else {
+                        const para = [];
+                        while (i < lines.length && lines[i].trim() && !/^(#{1,4}\s|\s*[-*]\s|\s*\d+[.)]\s|\s*\|)/.test(lines[i])) para.push(lines[i++].trim());
+                        out.push(`<p>${inline(para.join(" "))}</p>`);
+                    }
+                }
+                return out.join("\n");
+            }
+            function resultTable(text) {
+                const lines = text.split("\n").filter((l) => l && !l.startsWith("("));
+                const table = el("table");
+                lines.forEach((line, i) => {
+                    const tr = el("tr");
+                    line.split(" | ").forEach((cell) => tr.appendChild(el(i ? "td" : "th", "", cell)));
+                    table.appendChild(tr);
+                });
+                return table;
+            }
+
+            // --- Every agent gets its own animal ---
+            const CRITTERS = ["cat", "rabbit", "hamster", "guineapig"];
+            function critter(agent) {
+                if (agent === "Clarifier") return "puppy";
+                if (agent === "Lead") return "dog";
+                if (agent === "Writer") return "parakeet";
+                const n = parseInt(agent.replace(/\D/g, ""), 10) || 1;
+                return CRITTERS[(n - 1) % CRITTERS.length];
+            }
+            const SVGNS = "http://www.w3.org/2000/svg";
+            function icon(id, cls = "") {
+                const svg = document.createElementNS(SVGNS, "svg");
+                if (cls) svg.setAttribute("class", cls);
+                svg.setAttribute("aria-hidden", "true");
+                const use = document.createElementNS(SVGNS, "use");
+                use.setAttribute("href", "#" + id);
+                svg.appendChild(use);
+                return svg;
+            }
+            function avatar(agent) {
+                return icon("head-" + critter(agent), "avatar");
+            }
+            function showWorking(on) {
+                $("working")?.remove();
+                if (!on) return;
+                const w = el("div", "working");
+                w.id = "working";
+                const trail = el("span", "trail");
+                for (let i = 0; i < 4; i++) trail.appendChild(icon("ico-paw"));
+                w.append(trail, "The team is sniffing through the records...");
+                $("thread").appendChild(w);
+            }
+
+            // --- The research board ---
+            function lane(agent) {
+                if (lanes.has(agent)) return lanes.get(agent);
+                const node = el("div", "lane running");
+                node.appendChild(avatar(agent));
+                node.appendChild(el("div", "lane-name", agent));
+                node.appendChild(el("div", "lane-task"));
+                node.appendChild(el("ol"));
+                lanes.set(agent, node);
+                let group = $("board").lastElementChild;
+                if (!group || !group.classList.contains("lanes")) {
+                    group = el("div", "lanes");
+                    $("board").appendChild(group);
+                }
+                group.appendChild(node);
+                return node;
+            }
+            function onActivity(agent, text) {
+                const board = $("board");
+                board.querySelector(".board-empty")?.remove();
+                const round = text.match(/^round (\d+): (.*)$/);
+                if (agent === "Lead" && round) {
+                    board.appendChild(el("div", "round-label", `Round ${round[1]}: ${round[2]}`));
+                    return;
+                }
+                if (agent === "Writer" && !lanes.has("Writer")) board.appendChild(el("div", "round-label", "Writing"));
+                const node = lane(agent);
+                if (text.startsWith("task")) {
+                    node.querySelector(".lane-task").textContent = text.replace(/^task \(round \d+\): /, "");
+                    return;
+                }
+                if (text.startsWith("finished")) {
+                    node.className = "lane done";
+                    if (agent.startsWith("Researcher")) return;
+                }
+                if (text === "started") return;
+                const ran = text.match(/^ran (Q\d+): (.*)$/);
+                const li = el("li");
+                if (ran) {
+                    li.append(citeChip(ran[1]), " " + ran[2]);
+                } else if (/^called (run_sql|column_values)$/.test(text)) {
+                    return; // the "ran Q#" line says it better
+                } else {
+                    li.textContent = text.replace(/^called dispatch_researchers$/, "dispatching researchers").replace(/^called ask_user$/, "asking you a question")
+                        .replace(/^called submit_brief$/, "wrote the brief for the team");
+                    if (text.startsWith("finished")) li.textContent = "done";
+                }
+                node.querySelector("ol").appendChild(li);
+            }
+
+            // --- The report ---
+            function showReport(event) {
+                const [body] = event.markdown.split(/\n## Sources\n/);
+                const card = el("article", "report");
+                card.dataset.report = ++reports;
+                card.classList.add("card");
+                const banner = el("div", "report-banner");
+                banner.append(avatar("Writer"), el("div", "title", "The report"));
+                card.appendChild(banner);
+                const inner = el("div", "report-inner");
+                card.appendChild(inner);
+                const prose = el("div", "report-body");
+                prose.innerHTML = markdown(body);
+                chipify(prose);
+                inner.appendChild(prose);
+
+                const c = event.check || {};
+                const bad = (c.unverified || []).length + (c.unknown || []).length;
+                const check = el("div", "check" + (bad ? " bad" : ""));
+                check.append(
+                    el("span", "stamp", bad ? "look again" : "all good"),
+                    el(
+                        "span",
+                        "",
+                        bad
+                            ? `Citation check: ${bad} of ${c.numbers_checked} cited numbers could not be found in the query they cite. Treat those with care.`
+                            : `Citation check: all ${c.numbers_checked} cited numbers match the results of the queries they cite.`
+                    )
+                );
+                inner.appendChild(check);
+
+                if (event.sources?.length) {
+                    const wrap = el("section", "sources");
+                    const h = el("h2", "title");
+                    h.append(el("span", "g", "Our "), el("span", "r", "sources"));
+                    wrap.appendChild(h);
+                    wrap.appendChild(el("p", "", "Each tag is a query a researcher ran on the shelter records. Open one to see the SQL and the rows it returned."));
+                    for (const s of event.sources) {
+                        const d = el("details", "source");
+                        d.id = `src-${reports}-${s.id}`;
+                        const sum = el("summary");
+                        sum.append(citeChip(s.id), el("span", "", s.purpose), el("small", "", s.agent));
+                        d.appendChild(sum);
+                        const inner = el("div", "source-body");
+                        inner.appendChild(el("pre", "", s.sql));
+                        const res = el("div", "result");
+                        res.appendChild(resultTable(s.result));
+                        inner.appendChild(res);
+                        for (const link of s.datasets) inner.appendChild(el("p", "data-link", "Data: " + link));
+                        d.appendChild(inner);
+                        wrap.appendChild(d);
+                    }
+                    inner.appendChild(wrap);
+                }
+                $("thread").appendChild(card);
+                card.scrollIntoView({ block: "start", behavior: "smooth" });
+            }
+
+            // A citation tag anywhere opens its source
+            document.addEventListener("click", (e) => {
+                const chip = e.target.closest(".cite");
+                if (!chip) return;
+                const report = chip.closest(".report") || [...document.querySelectorAll(".report")].pop();
+                const target = report && document.getElementById(`src-${report.dataset.report}-${chip.dataset.q}`);
+                if (!target) return;
+                target.open = true;
+                target.classList.add("flash");
+                setTimeout(() => target.classList.remove("flash"), 1500);
+                target.scrollIntoView({ block: "center", behavior: "smooth" });
+            });
+
+            // --- Running a question ---
+            function setBusy(busy) {
+                $("send").disabled = busy;
+                $("question").disabled = busy;
+                clearInterval(timer);
+                if (busy) {
+                    const t0 = Date.now();
+                    $("status").textContent = "0s";
+                    timer = setInterval(() => ($("status").textContent = Math.round((Date.now() - t0) / 1000) + "s"), 1000);
+                }
+            }
+            function finish(status) {
+                setBusy(false);
+                showWorking(false);
+                $("status").textContent = status;
+                if (source) source.close();
+                $("question").focus();
+            }
+
+            function ask(text) {
+                if (source) source.close();
+                bubble("you", text);
+                $("new-chat").hidden = false;
+                if (!clarifying) {
+                    $("board").replaceChildren();
+                    lanes.clear();
+                }
+                resetContext();
+                setBusy(true);
+                showWorking(true);
+
+                const params = new URLSearchParams({ question: text, session_id: sessionId });
+                source = new EventSource("/run?" + params);
+                source.onmessage = (msg) => {
+                    const event = JSON.parse(msg.data);
+                    if (event.type === "start") runId = event.run_id;
+                    else if (event.type === "context") {
+                        if (document.body.classList.contains("show-context")) showContext(runId);
+                    } else if (event.type === "activity") onActivity(event.agent, event.text);
+                    else if (event.type === "clarify") {
+                        clarifying = true;
+                        bubble("lead", event.markdown, "Quick question first!");
+                        $("ask-label").textContent = "your answer to the lead";
+                        $("question").placeholder = "Answer the question above";
+                        finish("waiting for you");
+                    } else if (event.type === "report") {
+                        clarifying = false;
+                        $("ask-label").textContent = "what do you want to find out?";
+                        $("question").placeholder = "Ask a follow-up, e.g. what about cats?";
+                        showReport(event);
+                        finish(`done in ${$("status").textContent}`);
+                        lanes.forEach((node) => (node.className = "lane done"));
+                    } else if (event.type === "error") {
+                        clarifying = false;
+                        bubble("error", event.message, "Research failed");
+                        finish("failed");
+                    }
+                };
+                source.onerror = () => {
+                    bubble("error", "Lost the connection to the server. Ask again to retry.");
+                    finish("failed");
+                };
+            }
+
+            $("ask").addEventListener("submit", (e) => {
+                e.preventDefault();
+                const text = $("question").value.trim();
+                if (!text) return;
+                $("question").value = "";
+                ask(text);
+            });
+            $("new-chat").addEventListener("click", () => {
+                if ($("send").disabled) return;
+                fetch("/clear?session_id=" + encodeURIComponent(sessionId), { method: "POST" }).catch(() => {});
+                sessionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+                clarifying = false;
+                $("thread").replaceChildren();
+                $("board").replaceChildren();
+                lanes.clear();
+                $("status").textContent = "";
+                $("ask-label").textContent = "what do you want to find out?";
+                $("question").placeholder = "e.g. Which dogs wait longest to be adopted, and why?";
+                $("new-chat").hidden = true;
+                $("question").focus();
+            });
+            $("examples").addEventListener("click", (e) => {
+                const b = e.target.closest("button");
+                if (!b || $("send").disabled) return;
+                if (clarifying) {
+                    clarifying = false; // an example starts a fresh question
+                    sessionId = crypto.randomUUID ? crypto.randomUUID() : String(Date.now());
+                }
+                ask(b.textContent);
+            });
+            $("toggle-context").addEventListener("click", () => {
+                const on = document.body.classList.toggle("show-context");
+                $("toggle-context").textContent = on ? "hide what each agent saw" : "peek at what each agent saw";
+                if (on && runId) showContext(runId);
+            });
+        </script>
+    </body>
+</html>
