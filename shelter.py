@@ -63,6 +63,19 @@ TABLE recent_intakes  -- new system, one row per intake, 2025-05-04 to the snaps
   intake_health VARCHAR (84% NULL: rarely filled in), found_zip
   -- includes animals still in the shelter, so use it for intake counts, not outcomes.
 
+IMPORTANT JOIN RULES:
+- recent_stays already contains age_group, sex, breed, is_pit_bull_type,
+  is_black, intake_group, intake_date and days_in_shelter.
+  Use recent_stays alone when analyzing these dimensions.
+- Never JOIN recent_stays to recent_intakes on animal_id alone.
+  An animal may have multiple intake records, causing duplicate stays.
+- If fixed_at_intake is essential, first match each stay to exactly
+  one appropriate intake record using animal_id and intake_date.
+  Verify that the join preserves the number of stay rows.
+- If a reliable one-to-one intake match cannot be established,
+  report that the comparison is unavailable rather than using
+  duplicated observations.
+
 TABLE snapshot (data_through TIMESTAMP): the newest record. Treat it as "today" for this data.
 
 KNOWN LIMITS (say so when they matter):
