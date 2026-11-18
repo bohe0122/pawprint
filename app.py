@@ -698,6 +698,7 @@ class Answer:
 
 async def answer(session_id: str, message: str, hooks: ResearchHooks) -> Answer:
     research = Research(hooks=hooks)
+    phase_start = time.monotonic()
     session = session_for(session_id)
     history = await session.get_items(limit=HISTORY_ITEMS)
 
@@ -707,6 +708,8 @@ async def answer(session_id: str, message: str, hooks: ResearchHooks) -> Answer:
     clarify_agent = clarifier_must_brief if asked_last else clarifier
     user_item = {"role": "user", "content": message}
     result = await Runner.run(clarify_agent, [*history, user_item], context=research, hooks=hooks, max_turns=3)
+    print(f"[TIMING] Clarifier: {time.monotonic() - phase_start:.1f}s", flush=True)
+    phase_start = time.monotonic()
     if research.clarification and not research.brief:
         await session.add_items([user_item, {"role": "assistant", "content": CLARIFYING + research.clarification}])
         return Answer("clarify", research.clarification)
@@ -722,6 +725,9 @@ async def answer(session_id: str, message: str, hooks: ResearchHooks) -> Answer:
     except MaxTurnsExceeded:
         lead_notes = "The Lead hit its turn cap; write from the findings so far."
 
+    print(f"[TIMING] Lead + Researchers: {time.monotonic() - phase_start:.1f}s", flush=True)
+    phase_start = time.monotonic()
+
     # 3. Write: outside the loop. The Writer sees the message, the brief, the findings and the Lead's notes.
     prompt = _writer_input(message, research, lead_notes)
     report = str((await Runner.run(writer, prompt, hooks=hooks, max_turns=2)).final_output)
@@ -736,7 +742,7 @@ async def answer(session_id: str, message: str, hooks: ResearchHooks) -> Answer:
         fix = f"{prompt}\n\nYour draft:\n\n{report}\n\nFix these problems and return the whole report:\n{_citation_problems(check, causal)}"
         report = str((await Runner.run(writer, fix, hooks=hooks, max_turns=2)).final_output)
         check = shelter.check_citations(report, research.log)
-
+    print(f"[TIMING] Writer + citation checks: {time.monotonic() - phase_start:.1f}s", flush=True)
     sources_md, sources = _sources(report, research, check)
     # The session remembers the exchange, so the next message can build on this answer
     await session.add_items([user_item, {"role": "assistant", "content": _answer_summary(report)}])
