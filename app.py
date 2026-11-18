@@ -68,8 +68,8 @@ set_tracing_disabled(True)
 MODEL_NAME = os.environ.get("MODEL", "vertex_ai/gemini-3.5-flash")
 VERTEX = MODEL_NAME.startswith("vertex_ai/")
 MODEL = LitellmModel(model=MODEL_NAME, api_key=None if not VERTEX else "unused")
-# A stalled model call would hang the page: give up after 90 s, and retry twice.
-SETTINGS = ModelSettings(extra_args={"timeout": 90, "num_retries": 2, **({"vertex_location": "global"} if VERTEX else {})})
+# Limit slow model calls to 45 s with one retry to reduce research latency.
+SETTINGS = ModelSettings(extra_args={"timeout": 45, "num_retries": 1, **({"vertex_location": "global"} if VERTEX else {})})
 
 # --- Caps. Prompts ask for restraint; the code enforces it. Graders wait at most 5 minutes. ---
 MAX_ROUNDS = 3  # research rounds in all: the first fan-out plus at most 2 follow-ups
