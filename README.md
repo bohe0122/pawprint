@@ -251,8 +251,8 @@ Follows the course guide *Deploying to Cloud Run from GitHub*: Cloud Run → *Co
 - **Build type:** buildpack, entrypoint `uvicorn app:app --host 0.0.0.0 --port $PORT`.
   The database `data/shelter.duckdb` (about 9 MB) is committed, so it ships with every build.
 - **Authentication:** *Require authentication* → Identity-Aware Proxy, principal `columbia.edu`.
-- **Request timeout:** 300 seconds. Research time varies by question complexity. The agent uses limits on research rounds, researchers, and tool calls to help keep responses within the grader's 5-minute window.
-- **Memory:** 1 GiB.
+- **Request timeout:** 600 seconds. Research time varies by question complexity. The agent uses limits on research rounds, researchers, and tool calls to help keep responses within the grader's 5-minute evaluation window. The extended Cloud Run timeout prevents longer requests from being terminated prematurely.
+- - **Memory:** 1 GiB.
 - **Maximum instances: 1.** Conversation history lives in a SQLite file on the instance, and Cloud Run's
   filesystem is in memory and per instance, so every message in a session must reach the same instance.
   With more than one instance, follow-ups can lose their context.
